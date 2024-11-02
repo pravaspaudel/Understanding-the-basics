@@ -34,8 +34,8 @@ const TaskDetails = () => {
           name: newName,
         }
       );
-      console.log(response.data); // Log the updated task data
-      navigate("/"); // Navigate back to the task list after updating
+      console.log(response.data);
+      navigate("/");
     } catch (err) {
       console.error("Error updating task:", err);
       setError("Error updating task");
