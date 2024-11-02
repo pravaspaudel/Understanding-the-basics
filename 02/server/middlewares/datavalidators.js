@@ -8,7 +8,6 @@ const signupvalidation = (request, response, next) => {
   });
 
   const { error } = schema.validate(request.body);
-
   if (error) {
     return response
       .status(400)
@@ -18,7 +17,7 @@ const signupvalidation = (request, response, next) => {
   next();
 };
 
-const loginvalidation = (request, response, next) => {
+const loginvalidation = async (request, response, next) => {
   const schema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(100).required(),
