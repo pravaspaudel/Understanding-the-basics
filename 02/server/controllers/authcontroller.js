@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import express from "express";
 import bcrypt from "bcrypt";
 import userModel from "../model/user.model.js";
+import jwt from "jsonwebtoken";
 
 const signup = async (request, response) => {
   try {
@@ -21,8 +22,27 @@ const signup = async (request, response) => {
   }
 };
 
-const login = (request, response) => {
-  response.send("thi is login one");
+const login = async (request, response) => {
+  try {
+    const { email, password } = request.body;
+
+    const userdatafromdb = await userModel.findOne({ email });
+
+    if (!userdatafromdb) {
+      return response.status(403).json({ msg: `email or password is wrong` });
+    }
+
+    const isPasswordEqual = await bcrypt.compare(
+      password,
+      userdatafromdb.password
+    );
+
+    if (!isPasswordEqual) {
+      return response.status(403).json({ msg: `email or password is wrong` });
+    }
+  } catch (e) {
+    response.status(500).json({ msg: "server error" });
+  }
 };
 
 export { signup, login };
