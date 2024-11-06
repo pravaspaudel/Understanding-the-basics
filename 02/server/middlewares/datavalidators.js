@@ -8,6 +8,7 @@ const signupvalidation = (request, response, next) => {
   });
 
   const { error } = schema.validate(request.body);
+
   if (error) {
     return response
       .status(400)

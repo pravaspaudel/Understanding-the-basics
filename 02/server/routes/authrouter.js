@@ -7,7 +7,7 @@ import {
 
 const router = express.Router();
 
-router.route("/login").post(signupvalidation, login);
-router.route("/signup").post(loginvalidation, signup);
+router.route("/login").post(loginvalidation, login);
+router.route("/signup").post(signupvalidation, signup);
 
 export default router;

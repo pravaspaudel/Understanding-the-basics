@@ -40,6 +40,12 @@ const login = async (request, response) => {
     if (!isPasswordEqual) {
       return response.status(403).json({ msg: `email or password is wrong` });
     }
+
+    const SECRET_TOKEN = process.env.SECRET_TOKEN;
+
+    const jwttoken = jwt.sign({ email }, SECRET_TOKEN, { expiresIn: "2h" });
+
+    response.status(200).json({ token: jwttoken });
   } catch (e) {
     response.status(500).json({ msg: "server error" });
   }
