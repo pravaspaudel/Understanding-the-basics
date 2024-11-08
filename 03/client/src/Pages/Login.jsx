@@ -2,14 +2,39 @@ import React from "react";
 import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showpassword, setshowPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
-  const handlelogin = (e) => {
+  const navigate = useNavigate();
+
+  const handlelogin = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await fetch("http://localhost:8000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        console.log(`login successfully`);
+        navigate("/shop");
+      } else {
+        console.error("login failed");
+      }
+    } catch (error) {
+      console.log(`error :  ${error}`);
+    }
   };
 
   return (

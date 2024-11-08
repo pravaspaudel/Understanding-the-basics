@@ -7,7 +7,12 @@ const handlesignup = async (request, response) => {
 
     const { name, email, password } = request.body;
 
-    // Ensure all fields are present
+    const existingUser = await userModel.findOne({ email });
+
+    if (existingUser) {
+      return response.status(400).json({ message: "user already exists  " });
+    }
+
     if (!name || !email || !password) {
       return response.status(400).json({ message: `All fields are required` });
     }
@@ -15,7 +20,6 @@ const handlesignup = async (request, response) => {
     const saltround = 10;
     const hashedPassword = await bcrypt.hash(password, saltround);
 
-    // Create a new user
     const user = await userModel.create({
       name,
       email,
@@ -34,8 +38,37 @@ const handlesignup = async (request, response) => {
   }
 };
 
-const handlelogin = (request, response) => {
-  response.send(`This is login`);
+const handlelogin = async (request, response) => {
+  const { email, password } = request.body;
+
+  // Step 1: Validate input fields
+  if (!email || !password) {
+    console.log("All fields are required");
+    return response.status(400).json({ message: "All fields are required" });
+  }
+
+  try {
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return response.status(404).json({ message: "User not found" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (isPasswordValid) {
+      return response
+        .status(200)
+        .json({ message: "User logged in successfully" });
+    } else {
+      return response.status(401).json({ message: "Invalid password" });
+    }
+  } catch (error) {
+    console.log(`Error: ${error.message}`);
+    return response
+      .status(500)
+      .json({ message: "An error occurred", error: error.message });
+  }
 };
 
 export { handlelogin, handlesignup };
